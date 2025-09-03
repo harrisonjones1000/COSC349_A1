@@ -25,13 +25,24 @@ const pool = mysql.createPool({
 //if more than 10 connections, we wait for a free connection
 //express then serialises object to json, sends it back
 //browser / front end recieves it and processes
-app.get('/test-db', async (req, res) => { 
+// Get Fibonacci number by id
+app.get('/fib/:n', async (req, res) => {
+  const n = parseInt(req.params.n, 10);
+
+  // Validate input
+  if (isNaN(n) || n < 1 || n > 100) {
+    return res.status(400).json({ error: 'n must be an integer between 1 and 100' });
+  }
+
   try {
-    const [rows] = await pool.query('SELECT 1 AS success;');
-    res.json({ dbConnected: true, result: rows[0] });
+    const [rows] = await pool.query('SELECT value FROM fib WHERE id = ?', [n]);
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Fibonacci number not found' });
+    }
+    res.json({ n, value: rows[0].value });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ dbConnected: false, error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 

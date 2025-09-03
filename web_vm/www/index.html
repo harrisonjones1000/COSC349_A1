@@ -5,22 +5,36 @@
 </head>
 <body>
 <h1>Test</h1>
-    <button id="testBtn">Test DB</button>
+    <form id="fibForm">
+    <label for="n">Enter a number (1-100):</label>
+    <input type="number" id="n" name="n" min="1" max="100" step="1" required>
+    <button type="submit">Get Fibonacci</button>
+    </form>
+
     <pre id="output"></pre>
+
 
     <script>
     const middlewareIP = '192.168.56.13'; // middleware VM IP
     const port = 3000;
 
-    document.getElementById('testBtn').addEventListener('click', async () => {
-        try {
-        const res = await fetch(`http://${middlewareIP}:${port}/test-db`);
+    document.getElementById('fibForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); // stop form from reloading page
+    const n = parseInt(document.getElementById('n').value, 10);
+    if (n < 1 || n > 100) {
+        document.getElementById('output').textContent = 'Number must be between 1 and 100.';
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://192.168.56.13:3000/fib/${n}`);
         const data = await res.json();
-        document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-        } catch (err) {
+        document.getElementById('output').textContent = `F(${n}) = ${data.value}`;
+    } catch (err) {
         document.getElementById('output').textContent = 'Error: ' + err.message;
-        }
+    }
     });
+
     </script>
 </body>
 </html>
