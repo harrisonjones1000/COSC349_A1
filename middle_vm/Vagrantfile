@@ -10,12 +10,12 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.56.13"
   config.vm.synced_folder ".", "/vagrant", owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=777"]
 
-  config.vm.provision "shell", path: "build-middleware-vm.sh"
-
-   # VirtualBox provider settings
+  # VirtualBox provider settings
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 1024   # allocate 1 GB RAM (increase if needed)
     vb.cpus = 2        # give it 2 CPU cores
   end
+
+  config.vm.provision "shell", path: "build-middleware-vm.sh"
 
 end

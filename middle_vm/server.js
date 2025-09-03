@@ -1,11 +1,13 @@
 const express = require('express');      
 const mysql = require('mysql2/promise');  //promise lets you await queries instead of dealing with callback functions
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());                   
 app.use(express.urlencoded({ extended: true })); 
+app.use(cors()); // allow requests from any origin
 
 const pool = mysql.createPool({
   host: '192.168.56.12',   
@@ -33,6 +35,6 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Middleware server running at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Middleware server running at http://0.0.0.0:${port}`);
 });

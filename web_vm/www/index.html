@@ -4,9 +4,23 @@
 <title>Test page</title>
 </head>
 <body>
+<h1>Test</h1>
+    <button id="testBtn">Test DB</button>
+    <pre id="output"></pre>
 
-<h1>Testing 1, 2, 3 ...</h1>
-<p>Hello from Harrison<p>
-<p>I like balls<p>
+    <script>
+    const middlewareIP = '192.168.56.13'; // middleware VM IP
+    const port = 3000;
+
+    document.getElementById('testBtn').addEventListener('click', async () => {
+        try {
+        const res = await fetch(`http://${middlewareIP}:${port}/test-db`);
+        const data = await res.json();
+        document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+        document.getElementById('output').textContent = 'Error: ' + err.message;
+        }
+    });
+    </script>
 </body>
 </html>

@@ -1,17 +1,26 @@
 #!/bin/bash
 set -e
 
-# Update packages
-apt-get update
+echo "=== Updating system packages ==="
+apt-get update -y
+apt-get upgrade -y
 
-# Install Node.js & npm
-apt-get install -y nodejs npm
+echo "=== Installing curl ==="
+apt-get install -y curl
 
-# Go to shared folder
+echo "=== Adding NodeSource repo for Node.js 22.x ==="
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+
+echo "=== Installing Node.js and npm ==="
+apt-get install -y nodejs
+
+echo "=== Entering project folder ==="
 cd /vagrant
 
-# Install dependencies (npm = node package manager)
+echo "=== Installing npm dependencies ==="
 npm install
 
-# Start server in background
-nohup node server.js > /vagrant/server.log 2>&1 &
+echo "=== Starting server in background ==="
+nohup node server.js &
+
+echo "=== Provisioning finished successfully! ==="
