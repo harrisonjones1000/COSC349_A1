@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS fib (
 -- Refresh table data
 TRUNCATE TABLE fib;
 
--- Load CSV
+-- Load CSV data
 LOAD DATA LOCAL INFILE '/vagrant/fib.csv'
 INTO TABLE fib
 FIELDS TERMINATED BY ','

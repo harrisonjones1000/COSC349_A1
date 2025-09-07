@@ -2,30 +2,26 @@ const express = require('express');
 const mysql = require('mysql2/promise');  //promise lets you await queries instead of dealing with callback functions
 const cors = require('cors');
 
-const app = express();
+const app = express(); 
 const port = 3000;
 
-app.use(express.json());                   
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); //middleware to parse JSON bodies              
+app.use(express.urlencoded({ extended: true })); //middleware to parse URL-encoded bodies
 app.use(cors()); // allow requests from any origin
 
+// create a connection pool to the mysql db server
 const pool = mysql.createPool({
-  host: '192.168.56.12',   
+  host: '192.168.56.12', //IP od DB VM
   user: 'webuser',         
   password: 'insecure_db_pw',
   database: 'fvision',     
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  waitForConnections: true, // wait for a free connection if pool is full
+  connectionLimit: 10,      // maximum simultaneous connections
+  queueLimit: 0             
 });
 
-//Exprss mathces the incoming HTTP request to the right route
-//is asynch so we can use await inside
-//await pauses the route handler until the DB responds (note other requests can be handled concurrently)
-//if more than 10 connections, we wait for a free connection
-//express then serialises object to json, sends it back
-//browser / front end recieves it and processes
-// Get Fibonacci number by id
+// Express matches HTTP request to this route to get fionacci number by id
+// Async route so we can use await for database calls
 app.get('/fib/:n', async (req, res) => {
   const n = parseInt(req.params.n, 10);
 
@@ -35,10 +31,14 @@ app.get('/fib/:n', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query('SELECT value FROM fib WHERE id = ?', [n]);
+    // generate sql result from prepared statement
+    const [rows] = await pool.query('SELECT value FROM fib WHERE id = ?', [n]); 
+    
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Fibonacci number not found' });
     }
+
+    // send JSON response with the requested fibonacci number
     res.json({ n, value: rows[0].value });
   } catch (err) {
     console.error(err);
@@ -46,6 +46,8 @@ app.get('/fib/:n', async (req, res) => {
   }
 });
 
+// Start Express server and listen on all network interfaces (0.0.0.0)
+// This allows other VMs or the host to reach this server
 app.listen(port, '0.0.0.0', () => {
   console.log(`Middleware server running at http://0.0.0.0:${port}`);
 });

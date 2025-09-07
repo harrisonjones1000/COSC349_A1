@@ -13,10 +13,9 @@
 
     <pre id="output"></pre>
 
-
     <script>
     const middlewareIP = '192.168.56.13'; // middleware VM IP
-    const port = 3000;
+    const port = 3000; // middleware VM port
 
     document.getElementById('fibForm').addEventListener('submit', async (e) => {
     e.preventDefault(); // stop form from reloading page
@@ -27,8 +26,8 @@
     }
 
     try {
-        const res = await fetch(`http://192.168.56.13:3000/fib/${n}`);
-        const data = await res.json();
+        const res = await fetch(`http://192.168.56.13:3000/fib/${n}`); //HTTP get request to middleware server
+        const data = await res.json(); //parse the JSON response
         document.getElementById('output').textContent = `F(${n}) = ${data.value}`;
     } catch (err) {
         document.getElementById('output').textContent = 'Error: ' + err.message;
