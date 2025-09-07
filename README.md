@@ -49,16 +49,12 @@ This project demonstrates a multi-VM application setup using Vagrant and Virtual
 ## Redeployment
 
 1. Run `vagrant halt` to stop all running server
-2. Clean up stale Vagrant entries `vagrant global-status --prune`
-3. Start the VMS again via `vagrant up`
+2. Start the VMS again via `vagrant up`
 - Note you can start and stop individual servers, e.g. `vagrant halt webserver`
+
+- Troubleshooting tip: `vagrant global-status --prune` removes references to VMs that no longer exist and can resolve port forwarding or networking conflicts.
 
 ## Notes for Developers
 
 - All VMs share `/vagrant` folder for configuration files and scripts.
 - Port forwarding uses unique host ports to avoid collisions. `auto_correct: true` ensures SSH ports are adjusted automatically if conflicts occur.
-
-## Troubleshooting
-
-- Common issue: stale Vagrant entries can leave ports “in use,” causing boot failures.
-- Fix: run vagrant global-status --prune before redeployments to clean up invalid/stale VM entries and free ports (2201, 2202, 2203).
